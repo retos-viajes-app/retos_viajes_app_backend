@@ -1,0 +1,1 @@
+Start-Process powershell -ArgumentList ".\retos_viajes_app\Scripts\activate; uvicorn app.api.main:app --reload --port 13000  --log-level debug"

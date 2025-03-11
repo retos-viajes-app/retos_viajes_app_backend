@@ -1,0 +1,17 @@
+sqlacodegen
+pymysql
+sqlalchemy
+alembic
+uvicorn
+fastapi
+pydantic[email]
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+cryptography
+python-jose[cryptography]
+python-dotenv
+passlib
+bcrypt
+email-validator
+pydantic-settings

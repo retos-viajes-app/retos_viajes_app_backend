@@ -1,0 +1,41 @@
+# Entornos virtuales
+venv*/
+.env/
+*.env
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de configuración
+.env
+*.log
+*.sqlite3
+*.db
+
+# Archivos de dependencias y paquetes
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDEs y editores de código
+.vscode/
+.idea/
+*.iml
+
+# Archivos de compilación y distribución
+build/
+dist/
+*.egg-info/
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# FastAPI Swagger UI cache
+/.swagger_cache/
+
+# Otros
+.DS_Store
+Thumbs.db
