@@ -24,6 +24,7 @@ pip install -r requirements.txt
 ### Estandares
 Nombres de schemma: singular
 Nombres de router: plural
+Nombres de los modelos: 
 Devolvemos:
 - Update
 ```json

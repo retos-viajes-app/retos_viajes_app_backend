@@ -12,7 +12,7 @@ class Trip(Base):
     __tablename__ = 'trip'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(ForeignKey('user.id'), nullable=False, index=True)
+    user_id = Column(ForeignKey('user.id', ondelete="CASCADE"), nullable=False, index=True)
     destination_id = Column(ForeignKey('destination.id'), nullable=False, index=True)
     start_date = Column(TIMESTAMP, nullable=False, default=func.now())
     end_date = Column(TIMESTAMP, nullable=False, default=func.now())

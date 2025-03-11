@@ -147,19 +147,7 @@ def reset_password(email: str, data: ResetPasswordRequest, db: Session = Depends
     user = db.query(User).filter(User.email == email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-    reset_code = db.query(ConfirmationCode).filter(
-        ConfirmationCode.user_id == user.id,
-        ConfirmationCode.used == False,
-       ConfirmationCode.expires_at > datetime.utcnow()
-    ).first()
-
-    if not reset_code or (reset_code and not verify_password(data.code, reset_code.code)):
-        raise HTTPException(status_code=400, detail="Código de recuperación no válido o expirado")
-    
     user.hashed_password = hash_password(data.new_password)
-    reset_code.used = True
-
     db.commit()
     
     return {"message": "Contraseña actualizada correctamente"}
