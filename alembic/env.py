@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 
-from app.db.model import user, category, challenge, completed_challenge, destination, trip
+from app.db.model import user, category, challenge, completed_challenge, destination, trip, trip_challenge, trip_category
 from app.db.db_connection import Base
 from app.db.model import confirmation_code
 
