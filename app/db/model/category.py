@@ -14,3 +14,5 @@ class Category(Base):
     name = Column(String(100), nullable=False)
     description = Column(String(255), nullable=False)
     icon_url = Column(String(255))
+
+    trip_categories = relationship('TripCategory', back_populates='category')
