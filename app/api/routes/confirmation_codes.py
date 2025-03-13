@@ -25,7 +25,7 @@ def request_confirmation_code(data: UserEmail, db: Session = Depends(get_db)):
     
 # Endpoint para verificar el código de recuperación
 @router.post("/confirmation-code/verify")
-def verify_confirmation_code(data: VerifyConfirmationCode, db: Session = Depends(get_db), is_registration: bool= False):
+def verify_confirmation_code(data: VerifyConfirmationCode, db: Session = Depends(get_db)):
     
     user = db.query(User).filter(User.email == data.email).first()
     if not user:
@@ -47,7 +47,7 @@ def verify_confirmation_code(data: VerifyConfirmationCode, db: Session = Depends
     if not verify_password(data.code, reset_code.code):
         raise HTTPException(status_code=400, detail="Código incorrecto")
     
-    if is_registration:
+    if data.is_registration:
         user.is_verified = True
         reset_code.used = True
         db.commit()

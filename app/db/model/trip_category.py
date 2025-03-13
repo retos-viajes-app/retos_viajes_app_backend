@@ -2,9 +2,9 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String, TIMESTAMP, fu
 from sqlalchemy.dialects.mysql import TINYINT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from app.db.model.destination import Destination
-from app.db.model.user import User
+
 from app.db.db_connection import Base
+from app.db.model.category import Category
 
 class TripCategory(Base):
     __tablename__ = 'trip_category'

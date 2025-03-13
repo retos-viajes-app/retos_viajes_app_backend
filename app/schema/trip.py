@@ -8,10 +8,3 @@ class CreateTrip(BaseModel):
     start_date: datetime
     end_date: datetime
     status: str = "pending"
-
-class UpdateTrip(BaseModel):
-    user_id: int = None
-    destination_id: int = None
-    start_date: datetime = None
-    end_date: datetime = None
-    status: str = None  
