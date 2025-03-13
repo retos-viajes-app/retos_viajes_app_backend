@@ -5,6 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from app.db.db_connection import Base
 from app.db.model.category import Category
+
 class TripCategory(Base):
     __tablename__ = 'trip_category'
 

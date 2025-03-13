@@ -27,3 +27,4 @@ class Challenge(Base):
 
     category = relationship('Category')
     destination = relationship('Destination')
+    trip_challenges = relationship('TripChallenge', back_populates='challenge')

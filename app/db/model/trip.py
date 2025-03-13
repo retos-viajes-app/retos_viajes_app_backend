@@ -19,5 +19,8 @@ class Trip(Base):
     end_date = Column(TIMESTAMP, nullable=False, default=func.now())
     status = Column(String(100))
     created_at = Column(TIMESTAMP, default=func.now())
+
     destination = relationship('Destination')
     user = relationship('User')
+    trip_challenges = relationship('TripChallenge', back_populates='trip')
+    trip_categories = relationship('TripCategory', back_populates='trip')

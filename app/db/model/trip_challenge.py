@@ -6,7 +6,6 @@ from app.db.db_connection import Base
 
 from app.db.model.challenge import Challenge
 
-
 class TripChallenge(Base):
     __tablename__ = 'trip_challenge'
 
