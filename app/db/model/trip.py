@@ -3,11 +3,12 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String, TIMESTAMP, fu
 from sqlalchemy.dialects.mysql import TINYINT
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from app.db.model.destination import Destination
-from app.db.model.user import User
 from app.db.db_connection import Base
-
-
+##foreign keys
+from app.db.model.destination import Destination
+from app.db.model.trip_challenge import TripChallenge
+from app.db.model.trip_category import TripCategory
+from app.db.model.user import User
 class Trip(Base):
     __tablename__ = 'trip'
 

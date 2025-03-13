@@ -9,7 +9,10 @@ uvicorn category_controller:app --reload --port 5000
 ### Hacer cambios en la base de datos
 alembic revision --autogenerate -m "Crear db"
 alembic upgrade head
-
+### Problemas con alembic, borrar historial y ejecutar nueva mig
+SET SQL_SAFE_UPDATES = 0;
+DELETE FROM alembic_version;
+SET SQL_SAFE_UPDATES = 1;
 ### Claves para autenticación 
 - Generar en linux
     ```
@@ -34,3 +37,4 @@ Devolvemos:
 ```json
 {"id": "..."}
 ```
+g
