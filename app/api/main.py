@@ -26,8 +26,8 @@ app.add_middleware(
 
 app.include_router(user.router)
 app.include_router(confirmation_codes.router)
-app.include_router(trips.router)
-app.include_router(destinations.router)
+#app.include_router(trips.router)
+#app.include_router(destinations.router)
 #app.include_router(category_controller.router)
 
 

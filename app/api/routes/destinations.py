@@ -1,8 +1,8 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from app.auth.auth import verify_access_token
-from app.schema.trip import CreateTrip, UpdateTrip
-from app.db.model.trip import Destination
+#from app.schema.trip import CreateTrip, UpdateTrip
+from app.db.model.destination import Destination
 from sqlalchemy.orm import Session
 from app.db.db_connection import get_db
 
