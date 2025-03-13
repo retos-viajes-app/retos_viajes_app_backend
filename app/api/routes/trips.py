@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 from app.auth.auth import verify_access_token
-from app.schema.trip import CreateTrip
+from app.schema.trip import CreateTrip, UpdateTrip
 from app.db.model.trip import Trip
 from sqlalchemy.orm import Session
 from app.db.db_connection import get_db
@@ -19,7 +19,7 @@ def create_trip(trip: CreateTrip, user: dict = Depends(verify_access_token), db:
 
 
 @router.put("/trips/{trip_id}")
-def update_trip(trip_id: int,trip: CreateTrip, user: dict = Depends(verify_access_token), db: Session = Depends(get_db)):
+def update_trip(trip_id: int,trip: UpdateTrip, user: dict = Depends(verify_access_token), db: Session = Depends(get_db)):
     db_trip = db.query(Trip).filter(Trip.id == trip_id).first()
 
     if db_trip is None:
