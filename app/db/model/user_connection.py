@@ -10,5 +10,5 @@ class UserConnection(Base):
     status = Column(String(20), default="pending")  # pending | accepted
     created_at = Column(TIMESTAMP, default=func.now())
 
-    user_1 = relationship('User', foreign_keys=[user_id_1], back_populates='connections_sent')
-    user_2 = relationship('User', foreign_keys=[user_id_2], back_populates='connections_received')
+    user_1 = relationship('User', back_populates='connections_sent', foreign_keys=[user_id_1])
+    user_2 = relationship('User', back_populates='connections_received', foreign_keys=[user_id_2])

@@ -9,6 +9,7 @@ from app.schema.password_reset import ResetPasswordRequest
 from app.schema.user import  UserUpdate, UserResponse, UserLogin, UserRegister
 from pydantic import BaseModel, EmailStr
 from app.db.model.confirmation_code import ConfirmationCode
+
 router = APIRouter(tags=["users"])
 
 # Endpoint que verifica el usuario en la BD, si no existe lo crea y devuelve los tokens

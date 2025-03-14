@@ -24,9 +24,8 @@ class User(Base):
     is_verified = Column(Boolean, default=False)
     created_at = Column(TIMESTAMP, default=func.now())
     updated_at = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
+    # Relación con UserConnection: solicitudes enviadas
+    connections_sent = relationship('UserConnection', back_populates='user_1', foreign_keys='UserConnection.user_id_1')
 
-     # Solicitudes enviadas
-    connections_sent = relationship('UserConnection', back_populates='user_1')
-
-    # Solicitudes recibidas
-    connections_received = relationship('UserConnection', back_populates='user_2')
+    # Relación con UserConnection: solicitudes recibidas
+    connections_received = relationship('UserConnection', back_populates='user_2', foreign_keys='UserConnection.user_id_2')
