@@ -15,7 +15,7 @@ def create_trip(trip: CreateTrip, idinfo: dict = Depends(verify_access_token), d
     db.add(new_trip)
     db.commit()
     db.refresh(new_trip)
-    return {"id_viaje": new_trip.id}
+    return {"trip_id": new_trip.id}
 
 
 @router.put("/trips/{trip_id}")

@@ -39,6 +39,6 @@ from pydantic import BaseModel, EmailStr, Field
 class UserResponse(UserBase):
     sub: Optional[str]
     username: Optional[str] = None
-
+    id: int
     class Config:
         orm_mode = True
