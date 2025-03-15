@@ -1,7 +1,8 @@
 
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from app.auth.auth import verify_access_token
-from app.schema.trip import CreateTrip, UpdateTrip
+from app.schema.trip import CreateTrip, UpdateTrip, RequestTrip
 from app.db.model.trip import Trip
 from sqlalchemy.orm import Session
 from app.db.db_connection import get_db
@@ -17,7 +18,10 @@ def create_trip(trip: CreateTrip, idinfo: dict = Depends(verify_access_token), d
     db.refresh(new_trip)
     return {"trip_id": new_trip.id}
 
-
+@router.get("/trips/{user_id}", response_model=List[RequestTrip])
+def get_trips(user_id: int, db: Session = Depends(get_db), idinfo: dict = Depends(verify_access_token)):
+    trips = db.query(Trip).filter(Trip.user_id == user_id).all()
+    return trips
 @router.put("/trips/{trip_id}")
 def update_trip(trip_id: int,trip: UpdateTrip, idinfo: dict = Depends(verify_access_token), db: Session = Depends(get_db)):
     db_trip = db.query(Trip).filter(Trip.id == trip_id).first()
