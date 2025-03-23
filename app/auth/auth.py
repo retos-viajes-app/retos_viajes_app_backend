@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from app.db.db_connection import get_db
-import os
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from app.core.config import get_settings

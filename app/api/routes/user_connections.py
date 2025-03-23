@@ -5,10 +5,12 @@ from app.auth.auth import  get_current_user, verify_access_token
 from app.db.model.user import User
 from app.db.db_connection import get_db
 from app.db.model.user_connection import UserConnection
+from app.schema.user_connection import UserConnectionRequest,  UserConnectionResponse
 
 router = APIRouter(tags=["user_connections"])
 
-@router.post("/connections/request/{user_id}")
+#Endpoint para realizar una solicitud de conexión a otro usuario
+@router.post("/connections/request/{user_id}", response_model=dict)
 def send_connection_request(user_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     # Comprobar que el usuario existe
     target_user = db.query(User).filter(User.id == user_id).first()
@@ -19,7 +21,7 @@ def send_connection_request(user_id: int, current_user: User = Depends(get_curre
     if current_user.id == target_user.id:
         raise HTTPException(status_code=400, detail="No puedes conectar contigo mismo")
 
-    # Verificar si ya existe una solicitud pendiente de conexión entre estos dos usuarios
+    # Verificar si ya existe una solicitud de conexión entre estos dos usuarios
     existing_connection = db.query(UserConnection).filter(
         ((UserConnection.user_id_1 == current_user.id) & (UserConnection.user_id_2 == target_user.id)) |
         ((UserConnection.user_id_1 == target_user.id) & (UserConnection.user_id_2 == current_user.id))
@@ -27,12 +29,19 @@ def send_connection_request(user_id: int, current_user: User = Depends(get_curre
 
     if existing_connection:
         if existing_connection.status == "pending":
-            raise HTTPException(status_code=400, detail="La solicitud de conexión ya se ha enviado")
+            return {
+                "success": True,
+                "message": "Ya existe una solicitud de conexión en estado pendiente",
+                "connection_status": existing_connection.status
+            }
         elif existing_connection.status == "accepted":
-            raise HTTPException(status_code=400, detail="Ya has conectado con ese usuario")
-    
+            return {
+                "success": True,
+                "message": "Ya estáis conectados",
+                "connection_status": existing_connection.status
+            }
 
-    # Crear una nueva conexión con status pending
+    # Si no existe una conexión previa, se crea una nueva con estado "pending"
     new_connection = UserConnection(
         user_id_1=current_user.id,
         user_id_2=target_user.id,
@@ -42,4 +51,22 @@ def send_connection_request(user_id: int, current_user: User = Depends(get_curre
     db.commit()
     db.refresh(new_connection)
 
-    return {"message": "Solicitud de conexión enviada correctamente", "success": True}
+    return {
+        "success": True,
+        "message": "Solicitud de conexión enviada correctamente",
+        "connection": UserConnectionResponse.model_validate(new_connection)
+    }
+
+@router.delete("/connections/request/cancel/{user_id}", response_model = dict)
+def cancel_sent_connection_request(user_id : int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    existing_connection = db.query(UserConnection).filter(
+        ((UserConnection.user_id_1 == current_user.id) & (UserConnection.user_id_2 == user_id))).first()
+    if existing_connection is None:
+        raise HTTPException(status_code=404, detail="Solicitud no encontrada")
+    
+    db.delete(existing_connection)
+    db.commit()
+    return {
+        "success": True,
+        "message": "Solicitud de conexión cancelada correctamente"
+    }
