@@ -29,17 +29,9 @@ def send_connection_request(user_id: int, current_user: User = Depends(get_curre
 
     if existing_connection:
         if existing_connection.status == "pending":
-            return {
-                "success": True,
-                "message": "Ya existe una solicitud de conexión en estado pendiente",
-                "connection_status": existing_connection.status
-            }
+           raise HTTPException(status_code=400, detail="Ya existe una solicitud de conexión en estado pendiente")
         elif existing_connection.status == "accepted":
-            return {
-                "success": True,
-                "message": "Ya estáis conectados",
-                "connection_status": existing_connection.status
-            }
+             raise HTTPException(status_code=400, detail="Ya estáis conectados")
 
     # Si no existe una conexión previa, se crea una nueva con estado "pending"
     new_connection = UserConnection(
@@ -63,6 +55,9 @@ def cancel_sent_connection_request(user_id : int, current_user: User = Depends(g
         ((UserConnection.user_id_1 == current_user.id) & (UserConnection.user_id_2 == user_id))).first()
     if existing_connection is None:
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
+    
+    if existing_connection.status == "accepted":
+        raise HTTPException(status_code=400, detail="No puedes cancelar una solicitud que ya fue aceptada.")
     
     db.delete(existing_connection)
     db.commit()
