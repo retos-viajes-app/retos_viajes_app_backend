@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from typing import Optional
 from datetime import datetime
 
@@ -37,8 +37,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 class UserResponse(UserBase):
-    sub: Optional[str]
+    id: int
+    sub: Optional[str] = None
     username: Optional[str] = None
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

@@ -1,0 +1,1 @@
+from app.db.model.user_connection import UserConnection
