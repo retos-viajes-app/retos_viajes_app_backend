@@ -9,10 +9,7 @@ WEB_CLIENT_ID = get_settings().web_client_id
 #Funcion para verificar el token de Google
 def verify_google_token(authorization: str = Header(...)):
     try:
-        token = authorization.split(" ")[1]  # Extraer token de "Bearer <token>"
-        print("Token recibido:", token)
-        print("Web Client ID: ", os.getenv("WEB_CLIENT_ID"))
-        # Verificar el token con Google
+        token = authorization.split(" ")[1] 
         id_info = id_token.verify_oauth2_token(
             token, 
             google_request.Request(), 
