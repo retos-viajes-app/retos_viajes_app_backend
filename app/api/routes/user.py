@@ -150,4 +150,4 @@ def reset_password(email: str, data: ResetPasswordRequest, db: Session = Depends
     user.hashed_password = hash_password(data.new_password)
     db.commit()
     
-    return {"message": "Contraseña actualizada correctamente"}
+    return {"message": "Contraseña actualizada correctamente", "success": True}
