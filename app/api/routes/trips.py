@@ -18,9 +18,13 @@ def create_trip(trip: CreateTrip, idinfo: dict = Depends(verify_access_token), d
     db.refresh(new_trip)
     return {"trip_id": new_trip.id}
 
+#Cambiar a return User.trips, mirar si merece la pena ya que con trips solo es más eficiente
+#Orientado para muchos viajes, en el frontend solo habrá uno por ahora
 @router.get("/trips/{user_id}", response_model=List[RequestTrip])
-def get_trips(user_id: int, db: Session = Depends(get_db), idinfo: dict = Depends(verify_access_token)):
+def get_user_trips(user_id: int, db: Session = Depends(get_db), idinfo: dict = Depends(verify_access_token)):
+    #user = db.query(User).filter(User.id == user_id).first()
     trips = db.query(Trip).filter(Trip.user_id == user_id).all()
+    #return user.trips
     return trips
 @router.put("/trips/{trip_id}")
 def update_trip(trip_id: int,trip: UpdateTrip, idinfo: dict = Depends(verify_access_token), db: Session = Depends(get_db)):
