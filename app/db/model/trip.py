@@ -14,7 +14,7 @@ class Trip(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(ForeignKey('user.id', ondelete="CASCADE"), nullable=False, index=True)
-    destination_id = Column(ForeignKey('destination.id'), nullable=False, index=True)
+    destination_id = Column(ForeignKey('destination.id', ondelete="CASCADE"), nullable=False, index=True)
     start_date = Column(TIMESTAMP, nullable=False, default=func.now())
     end_date = Column(TIMESTAMP, nullable=False, default=func.now())
     status = Column(String(100))

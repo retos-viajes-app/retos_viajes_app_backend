@@ -9,8 +9,8 @@ from app.db.model.challenge import Challenge
 class TripChallenge(Base):
     __tablename__ = 'trip_challenge'
 
-    trip_id = Column(ForeignKey('trip.id'), primary_key=True)
-    challenge_id = Column(ForeignKey('challenge.id'), primary_key=True)
+    trip_id = Column(ForeignKey('trip.id', ondelete="CASCADE"), primary_key=True)
+    challenge_id = Column(ForeignKey('challenge.id', ondelete="CASCADE"), primary_key=True)
 
     trip = relationship('Trip', back_populates='trip_challenges')
     challenge = relationship('Challenge', back_populates='trip_challenges')

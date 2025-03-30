@@ -5,8 +5,8 @@ from sqlalchemy.orm import relationship
 class UserConnection(Base):
     __tablename__ = 'user_connection'
 
-    user_id_1 = Column(ForeignKey('user.id'), primary_key=True)
-    user_id_2 = Column(ForeignKey('user.id'), primary_key=True)
+    user_id_1 = Column(ForeignKey('user.id', ondelete="CASCADE"), primary_key=True)
+    user_id_2 = Column(ForeignKey('user.id', ondelete="CASCADE"), primary_key=True)
     status = Column(String(20), default="pending")  # pending | accepted
     created_at = Column(TIMESTAMP, default=func.now())
 

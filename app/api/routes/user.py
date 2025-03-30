@@ -151,13 +151,18 @@ def reset_password(email: str, data: ResetPasswordRequest, db: Session = Depends
     
     return {"message": "Contraseña actualizada correctamente"}
 
+#Endpoint para obtener usuarios sugeridos
 @router.get("/connections/suggested", response_model=UsersSuggestedResponse)
-def get_users(
+def get_suggested_users(
     page: int = Query(1, alias="page", ge=1),
     per_page: int = Query(10, alias="per_page", le=50),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    
+    if per_page <= 0:
+        raise HTTPException(status_code=400, detail="per_page debe ser mayor que 0")
+    
     user_query = db.query(User).filter(User.id != current_user.id)
     
     # Filtrar usuarios ya conectados

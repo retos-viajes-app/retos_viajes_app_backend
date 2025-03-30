@@ -11,9 +11,9 @@ class CompletedChallenge(Base):
     __tablename__ = 'completed_challenge'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(ForeignKey('user.id'), nullable=False, index=True)
-    challenge_id = Column(ForeignKey('challenge.id'), nullable=False, index=True)
-    trip_id = Column(ForeignKey('trip.id'), nullable=False, index=True)
+    user_id = Column(ForeignKey('user.id', ondelete="CASCADE"), nullable=False, index=True)
+    challenge_id = Column(ForeignKey('challenge.id', ondelete="CASCADE"), nullable=False, index=True)
+    trip_id = Column(ForeignKey('trip.id', ondelete="CASCADE"), nullable=False, index=True)
     completed_at = Column(TIMESTAMP, default=func.now())
     proof_photo_url = Column(String(255))
     description = Column(String(255))

@@ -11,8 +11,8 @@ class Challenge(Base):
     __tablename__ = 'challenge'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    category_id = Column(ForeignKey('category.id'), nullable=False, index=True)
-    destination_id = Column(ForeignKey('destination.id'), nullable=False, index=True)
+    category_id = Column(ForeignKey('category.id', ondelete="CASCADE"), nullable=False, index=True)
+    destination_id = Column(ForeignKey('destination.id', ondelete="CASCADE"), nullable=False, index=True)
     title = Column(String(100), nullable=False)
     short_description = Column(String(100), nullable=False)
     long_description = Column(String(255))

@@ -4,6 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
 
 from app.schema.user import UserResponse
+from app.schema.pagination_info import PaginationInfo
 
 class UserConnectionRequest(BaseModel):
     user_id_1: int
@@ -18,10 +19,6 @@ class UserConnectionBase(BaseModel):
 class UserConnectionResponse(UserConnectionBase):
     created_at: Optional[datetime] = None
 
-class PaginationInfo(BaseModel):
-    page: int
-    per_page: int
-    has_more: bool
 
 class UsersSuggestedResponse(BaseModel):
     users: List[UserResponse]

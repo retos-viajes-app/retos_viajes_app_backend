@@ -9,8 +9,8 @@ from app.db.model.category import Category
 class TripCategory(Base):
     __tablename__ = 'trip_category'
 
-    trip_id = Column(ForeignKey('trip.id'), primary_key=True)
-    category_id = Column(ForeignKey('category.id'), primary_key=True)
+    trip_id = Column(ForeignKey('trip.id', ondelete="CASCADE"), primary_key=True)
+    category_id = Column(ForeignKey('category.id', ondelete="CASCADE"), primary_key=True)
 
     trip = relationship('Trip', back_populates='trip_categories')
     category = relationship('Category', back_populates='trip_categories')
