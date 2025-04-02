@@ -148,8 +148,8 @@ def reset_password(email: str, data: ResetPasswordRequest, db: Session = Depends
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     user.hashed_password = hash_password(data.new_password)
     db.commit()
-    
-    return {"message": "Contraseña actualizada correctamente"}
+   
+    return {"message": "Contraseña actualizada correctamente", "success": True}
 
 @router.get("/connections/suggested", response_model=UsersSuggestedResponse)
 def get_users(
@@ -203,3 +203,4 @@ def get_users(
             has_more=has_more
         )
     )
+

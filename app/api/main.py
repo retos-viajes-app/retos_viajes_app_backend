@@ -4,6 +4,7 @@ from app.api.routes import confirmation_codes, destinations, user,trips, user_co
 
 
 
+
 app = FastAPI()
 
 ### CORS configuration
@@ -26,10 +27,10 @@ app.add_middleware(
 
 app.include_router(user.router)
 app.include_router(confirmation_codes.router)
+app.include_router(trips.router)
+app.include_router(destinations.router)
+app.include_router(categories.router)
+app.include_router(trips_categories.router)
 app.include_router(user_connections.router)
-#app.include_router(trips.router)
-#app.include_router(destinations.router)
-#app.include_router(category_controller.router)
-
 
 #app.mount("/static", StaticFiles(directory="static"), name="static")
