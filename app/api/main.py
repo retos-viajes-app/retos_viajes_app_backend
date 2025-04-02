@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import confirmation_codes, user,trips
+from app.api.routes import confirmation_codes, destinations, user,trips
+from app.api.routes import categories
+from app.api.routes import trips_categories
 
 
 
@@ -27,7 +29,7 @@ app.add_middleware(
 app.include_router(user.router)
 app.include_router(confirmation_codes.router)
 app.include_router(trips.router)
-#app.include_router(category_controller.router)
-
-
+app.include_router(destinations.router)
+app.include_router(categories.router)
+app.include_router(trips_categories.router)
 #app.mount("/static", StaticFiles(directory="static"), name="static")
