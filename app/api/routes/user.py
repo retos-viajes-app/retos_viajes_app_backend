@@ -1,7 +1,8 @@
 from datetime import datetime
-from fastapi import APIRouter, HTTPException, FastAPI, Depends, Header, Body
+from fastapi import APIRouter, HTTPException, FastAPI, Depends, Header, Body, Query
+from sqlalchemy import case, exists
 from sqlalchemy.orm import Session
-from app.auth.auth import create_access_token, create_refresh_token, hash_password, verify_access_token, verify_password
+from app.auth.auth import create_access_token, create_refresh_token, get_current_user, hash_password, verify_access_token, verify_password
 from app.auth.auth_google import verify_google_token
 from app.db.model.user import User
 from app.db.db_connection import get_db
@@ -9,6 +10,9 @@ from app.schema.password_reset import ResetPasswordRequest
 from app.schema.user import  UserUpdate, UserResponse, UserLogin, UserRegister
 from pydantic import BaseModel, EmailStr
 from app.db.model.confirmation_code import ConfirmationCode
+from app.db.model.user_connection import UserConnection
+from app.schema.user_connection import PaginationInfo, UsersSuggestedResponse
+
 router = APIRouter(tags=["users"])
 
 # Endpoint que verifica el usuario en la BD, si no existe lo crea y devuelve los tokens
@@ -29,7 +33,6 @@ def verify_google_token(db: Session = Depends(get_db), id_info: dict = Depends(v
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        user_id = new_user.sub  # Usar ID recién creado
 
     else:
         # Si el usuario existe pero no tiene 'sub', lo actualizamos
@@ -38,11 +41,9 @@ def verify_google_token(db: Session = Depends(get_db), id_info: dict = Depends(v
             db.commit()
             db.refresh(db_user)
 
-        user_id = db_user.sub  # Usar el ID del usuario existente
-
     # Generar tokens para el usuario
-    access_token = create_access_token(user_id)
-    refresh_token = create_refresh_token(user_id)
+    access_token = create_access_token(str(db_user.id))
+    refresh_token = create_refresh_token(str(db_user.id))
 
     return {
         "access_token": access_token,
@@ -72,8 +73,7 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
 # Endpoint para hacer login de forma tradicional
 @router.post("/login")
 def login(user: UserLogin, db: Session = Depends(get_db)):
-    print("User:", user)
-    print("User.userid:", user.userid)
+    
     if "@" in user.userid:
         email = user.userid
         db_user = db.query(User).filter(User.email == email).first()
@@ -143,11 +143,64 @@ def delete_user(email: str, db: Session = Depends(get_db), idinfo: dict = Depend
 
 @router.post("/users/reset-password/{email}")
 def reset_password(email: str, data: ResetPasswordRequest, db: Session = Depends(get_db)):
-    print("email:", email)
     user = db.query(User).filter(User.email == email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     user.hashed_password = hash_password(data.new_password)
     db.commit()
-    
+   
     return {"message": "Contraseña actualizada correctamente", "success": True}
+
+@router.get("/connections/suggested", response_model=UsersSuggestedResponse)
+def get_users(
+    page: int = Query(1, alias="page", ge=1),
+    per_page: int = Query(10, alias="per_page", le=50),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    user_query = db.query(User).filter(User.id != current_user.id)
+    
+    # Filtrar usuarios ya conectados
+    # Subconsulta para obtener IDs de usuarios conectados
+    connected_users = db.query(UserConnection.user_id_1).filter(UserConnection.user_id_2 == current_user.id)
+    connected_users = connected_users.union(
+        db.query(UserConnection.user_id_2).filter(UserConnection.user_id_1 == current_user.id)
+    )
+    user_query = user_query.filter(~User.id.in_(connected_users))
+    
+    # Añadir orden consistente
+    user_query = user_query.order_by(User.created_at.desc())
+    
+    # Aplicar paginación
+    offset = (page - 1) * per_page
+    paginated_users = user_query.offset(offset).limit(per_page + 1).all()
+    
+    # Verificar si hay más páginas obteniendo un elemento extra
+    has_more = len(paginated_users) > per_page
+    users_to_return = paginated_users[:per_page]
+    
+
+    user_responses = [
+        UserResponse(
+            id=user.id,
+            username=user.username,
+            name=user.name,
+            email=user.email,
+            profile_photo_url=user.profile_photo_url,
+            bio=user.bio,
+            total_points=user.total_points,
+            is_verified=user.is_verified,
+        )
+        for user in users_to_return
+    ]
+
+
+    return UsersSuggestedResponse(
+        users=user_responses,
+        pagination=PaginationInfo(
+            page=page,
+            per_page=per_page,
+            has_more=has_more
+        )
+    )
+

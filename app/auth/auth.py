@@ -1,10 +1,12 @@
-from fastapi import HTTPException, Header
+from fastapi import Depends, HTTPException, Header
 from datetime import datetime, timedelta
 from pydantic import BaseModel
-import os
+from sqlalchemy.orm import Session
+from app.db.db_connection import get_db
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from app.core.config import get_settings
+from app.db.model.user import User
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 15
@@ -36,9 +38,17 @@ def verify_access_token(authorization: str = Header(...)):
         user_id: str = payload.get("sub")
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token payload")
-        return {"sub": user_id}
+        return user_id
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid access token")
+
+# Función para obtener el usuario completo
+def get_current_user(user_id: int = Depends(verify_access_token), db: Session = Depends(get_db)) -> User:
+    # Buscar el usuario en la base de datos
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=401, detail="Usuario no encontrado")
+    return user
 
 
 #Funciones para encriptar y verificar contraseñas

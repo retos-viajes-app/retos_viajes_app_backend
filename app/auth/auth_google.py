@@ -1,4 +1,3 @@
-import os
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_request
 from fastapi import HTTPException, Header
@@ -9,7 +8,9 @@ WEB_CLIENT_ID = get_settings().web_client_id
 #Funcion para verificar el token de Google
 def verify_google_token(authorization: str = Header(...)):
     try:
+
         token = authorization.split(" ")[1] 
+
         id_info = id_token.verify_oauth2_token(
             token, 
             google_request.Request(), 
